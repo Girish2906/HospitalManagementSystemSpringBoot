@@ -5,10 +5,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Data
 //@ToString
 @Table(
         name = "patient_tlb" ,
@@ -41,7 +45,6 @@ public class Patient {
     @Enumerated(EnumType.STRING)
     private BloodGroupType bloodGroup ;
 
-
     @Override
     public String toString() {
         return "Patient{" +
@@ -52,5 +55,15 @@ public class Patient {
                 ", birthDate=" + birthDate +
                 '}';
     }
+
+//    this is the owning side
+    @OneToOne(cascade = { CascadeType.ALL } , orphanRemoval = true)
+    @JoinColumn(name = "patient_insurance_id")
+    private Insurance insurance ;
+
+
+//    @ToString.Exclude
+    @OneToMany(mappedBy = "patient" , cascade = {CascadeType.REMOVE} , orphanRemoval = true , fetch = FetchType.EAGER)
+    private List<Appointment> appointments = new ArrayList<>();
 
 }
